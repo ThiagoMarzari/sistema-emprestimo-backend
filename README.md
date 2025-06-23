@@ -1,5 +1,5 @@
 
-# 🎓 Sistema de Empréstimo - UFN  
+# ![image](https://github.com/user-attachments/assets/7342c5d7-e007-4320-a9c2-5bf39eb1275d) Sistema de Empréstimo - UFN  
 > Sistema para controle de **itens emprestados** e **devolução** na **Universidade Franciscana (UFN)**.
 
 ---
@@ -172,8 +172,6 @@ UFN - Controle Itens.postman_collection.json
 
 ---
 
-![WhatsApp Image 2025-06-23 at 13 09 34](https://github.com/user-attachments/assets/26a1136a-01f8-4ca0-9016-b24dd10d7c1d)
-
 ## 👨‍💻 Autores
 
 **Thiago Marzari**  
@@ -185,7 +183,7 @@ GitHub: [@Gabrielzinho1518](https://github.com/Gabrielzinho1518)
 **Gabriel Pinheiro**  
 GitHub: [@gabriel99557](https://github.com/gabriel99557) 
 
-**Gabriel Machado** 
+**Gabriel Machado**  
 Github: [@Gorling](https://github.com/Gorling)
 
 
