@@ -17,6 +17,6 @@ public class User {
     @Column(unique = true)
     private String codigo;
 
-    @OneToMany(mappedBy = "usuarioAtual")
-    private List<Item> itens;
+    @OneToMany(mappedBy = "usuario")
+    private List<Loan> loans;
 }

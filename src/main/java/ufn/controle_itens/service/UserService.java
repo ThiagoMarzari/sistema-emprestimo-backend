@@ -1,9 +1,7 @@
 package ufn.controle_itens.service;
 
 import org.springframework.stereotype.Service;
-import ufn.controle_itens.dto.LoanLogDto;
 import ufn.controle_itens.dto.UserDto;
-import ufn.controle_itens.model.LoanLog;
 import ufn.controle_itens.model.User;
 import ufn.controle_itens.repository.UserRepository;
 

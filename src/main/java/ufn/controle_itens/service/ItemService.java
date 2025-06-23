@@ -1,15 +1,12 @@
 package ufn.controle_itens.service;
 
 import org.springframework.stereotype.Service;
-import ufn.controle_itens.dto.DevolverRequestDto;
-import ufn.controle_itens.dto.EmprestimoRequestDto;
-import ufn.controle_itens.dto.ItemDto;
-import ufn.controle_itens.dto.LoanLogDto;
+import ufn.controle_itens.dto.*;
 import ufn.controle_itens.model.Item;
-import ufn.controle_itens.model.LoanLog;
+import ufn.controle_itens.model.Loan;
 import ufn.controle_itens.model.User;
 import ufn.controle_itens.repository.ItemRepository;
-import ufn.controle_itens.repository.LoanLogRepository;
+import ufn.controle_itens.repository.LoanRepository;
 import ufn.controle_itens.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -20,27 +17,50 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-    private final LoanLogRepository loanLogRepository;
+    private final LoanRepository loanRepository;
 
-    public ItemService(ItemRepository itemRepository, UserRepository userRepository, LoanLogRepository loanLogRepository) {
+    public ItemService(ItemRepository itemRepository, UserRepository userRepository, LoanRepository loanRepository) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
-        this.loanLogRepository = loanLogRepository;
+        this.loanRepository = loanRepository;
     }
 
-    public Item salvar(ItemDto itemDto){
+    public Item salvar(ItemDto itemDto) {
         try {
-        Item item = new Item();
-        item.setNome(itemDto.getNome());
-        item.setCodigo(itemDto.getCodigo());
-        return itemRepository.save(item);
+            Item item = new Item();
+            item.setNome(itemDto.getNome());
+            item.setCodigo(itemDto.getCodigo());
+            return itemRepository.save(item);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao salvar o item: " + e.getMessage());
         }
     }
 
-    public List<Item> listar() {
-        return itemRepository.findAll().reversed();
+    public List<ItemDto> listar() {
+        List<Item> itens = itemRepository.findAll();
+
+        List<ItemDto> itemDtos = itens.stream()
+                .map(item -> {
+                    String status = item.isDisponivel() ? "Disponível" : "Indisponível";
+                    String usuarioNome = "N/A";
+
+                    // Se o item estiver emprestado, tentamos pegar o último usuário da lista de empréstimos
+                    if (!item.isDisponivel() && item.getLoans() != null && !item.getLoans().isEmpty()) {
+                        // Pegamos o último empréstimo (o mais recente)
+                        Loan ultimoLoan = item.getLoans().get(item.getLoans().size() - 1);
+                        usuarioNome = ultimoLoan.getUsuario().getNome();
+                    }
+
+                    return new ItemDto(
+                            item.getNome(),
+                            item.getCodigo(),
+                            item.isDisponivel()
+                    );
+                })
+                .toList();
+
+        // Retorna a lista invertida (mais recente no topo)
+        return itemDtos.reversed();
     }
 
     public Item deletar(Long id) {
@@ -51,31 +71,28 @@ public class ItemService {
     }
 
     public void emprestar(EmprestimoRequestDto dto) {
-        System.out.println("Código recebido: " + dto.getItemCodigo());
         Item item = itemRepository.findByCodigo(dto.getItemCodigo())
                 .orElseThrow(() -> new RuntimeException("Item não encontrado"));
+
+        if (!item.isDisponivel()) {
+            throw new RuntimeException("Item já está emprestado");
+        }
 
         User usuario = userRepository.findByCodigo(dto.getUsuarioCodigo())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        //Empresta o item para o usuário
-        if (!item.isDisponivel()) {
-            throw new RuntimeException("Item já está emprestado");
-        }
         item.setDisponivel(false);
-        item.setUsuarioAtual(usuario);
 
-        LoanLog loanLog = new LoanLog();
-        loanLog.setItem(item);
-        loanLog.setUsuario(usuario);
-        loanLog.setTipo("EMPRESTIMO");
-        loanLog.setDataEmprestimo(LocalDateTime.now());
+        Loan loan = new Loan();
+        loan.setItem(item);
+        loan.setUsuario(usuario);
+        loan.setTipo("EMPRESTIMO");
+        loan.setDataHora(LocalDateTime.now());
 
-        loanLogRepository.save(loanLog);
+        loanRepository.save(loan);
+        itemRepository.save(item);
 
         System.out.println("Item emprestado: " + item.getNome() + " para usuário: " + usuario.getNome());
-
-        itemRepository.save(item);
     }
 
     public void devolver(DevolverRequestDto dto) {
@@ -86,52 +103,60 @@ public class ItemService {
             throw new RuntimeException("Item já está disponível");
         }
 
-        //Devolve o item
         item.setDisponivel(true);
-        item.setUsuarioAtual(null);
 
-        LoanLog loanLog = new LoanLog();
-        loanLog.setItem(item);
-        // Busca usuário 'Desconhecido' pelo código
-        User usuario = userRepository.findByCodigo("Desconhecido").orElseGet(() -> {
-            User novoUsuario = new User();
-            novoUsuario.setNome("Desconhecido");
-            novoUsuario.setCodigo("Desconhecido");
-            return userRepository.save(novoUsuario);
-        });
-        loanLog.setUsuario(usuario);
-        loanLog.setTipo("DEVOLUÇAO");
-        loanLog.setDataEmprestimo(LocalDateTime.now());
+        // Buscar o último empréstimo do item
+        Loan ultimoEmprestimo = loanRepository.findTopByItemAndTipoOrderByDataHoraDesc(item, "EMPRESTIMO");
+
+        Loan loan = new Loan();
+        loan.setItem(item);
+        loan.setUsuario(ultimoEmprestimo != null ? ultimoEmprestimo.getUsuario() : null);
+        loan.setTipo("DEVOLUCAO");
+        loan.setDataHora(LocalDateTime.now());
+
+        loanRepository.save(loan);
+        itemRepository.save(item);
 
         System.out.println("Item devolvido: " + item.getNome());
-
-        loanLogRepository.save(loanLog);
-        itemRepository.save(item);
     }
 
-    public List<ItemDto> listarItensEmprestados() {
-        List<Item> itens = itemRepository.findAll();
+    public List<ItemLoanDto> listarItensEmprestados() {
+        return itemRepository.findAll().stream()
+                .filter(item -> !item.isDisponivel())
+                .map(item -> {
+                    String usuarioNome = "Desconhecido";
+                    String usuarioCodigo = "N/A";
 
-        // Filtra os itens que estão emprestados (não disponíveis)
-        itens = itens.stream().filter(item -> !item.isDisponivel()).toList();
+                    if (item.getLoans() != null && !item.getLoans().isEmpty()) {
+                        Loan ultimoLoan = item.getLoans().get(item.getLoans().size() - 1);
+                        if (ultimoLoan.getUsuario() != null) {
+                            usuarioNome = ultimoLoan.getUsuario().getNome();
+                            usuarioCodigo = ultimoLoan.getUsuario().getCodigo();
+                        }
+                    }
 
-        return itens.stream().map(item -> new ItemDto(
-                item.getNome(),
-                item.getCodigo(),
-                item.getUsuarioAtual().getNome(),
-                item.getUsuarioAtual().getCodigo()
-        )).toList().reversed();
+                    return new ItemLoanDto(
+                            item.getNome(),
+                            item.getCodigo(),
+                            usuarioNome,
+                            usuarioCodigo
+                    );
+                })
+                .toList()
+                .reversed();
     }
 
     public List<LoanLogDto> listarLogs() {
-        List<LoanLog> logs = loanLogRepository.findAll(); // ou filtrado por data etc.
+        List<Loan> logs = loanRepository.findAll();
 
-        return logs.stream().map(log -> new LoanLogDto(
-                log.getTipo(),
-                log.getItem().getNome(),
-                log.getItem().getCodigo(),
-                log.getUsuario().getNome(),
-                log.getUsuario().getCodigo(),
-                log.getDataEmprestimo())).toList().reversed();
+        return logs.stream()
+                .map(log -> new LoanLogDto(
+                        log.getTipo(),
+                        log.getItem().getNome(),
+                        log.getItem().getCodigo(),
+                        log.getUsuario() != null ? log.getUsuario().getNome() : "Desconhecido",
+                        log.getUsuario() != null ? log.getUsuario().getCodigo() : "N/A",
+                        log.getDataHora()))
+                .toList().reversed();
     }
 }

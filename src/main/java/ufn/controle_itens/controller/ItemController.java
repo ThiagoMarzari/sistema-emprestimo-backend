@@ -3,10 +3,7 @@ package ufn.controle_itens.controller;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ufn.controle_itens.dto.DevolverRequestDto;
-import ufn.controle_itens.dto.EmprestimoRequestDto;
-import ufn.controle_itens.dto.ItemDto;
-import ufn.controle_itens.dto.LoanLogDto;
+import ufn.controle_itens.dto.*;
 import ufn.controle_itens.model.Item;
 import ufn.controle_itens.service.ItemService;
 
@@ -37,7 +34,7 @@ public class ItemController {
     @GetMapping
     public ResponseEntity<List<?>> listarItens() {
         try {
-            List<Item> itens = itemService.listar();
+            List<ItemDto> itens = itemService.listar();
             return ResponseEntity.ok(itens);
         } catch (Exception ex) {
             return ResponseEntity.status(500).body(null);
@@ -45,7 +42,7 @@ public class ItemController {
     }
 
     @GetMapping("/emprestados")
-    public ResponseEntity<List<ItemDto>> listarItensEmprestados() {
+    public ResponseEntity<List<ItemLoanDto  >> listarItensEmprestados() {
         return ResponseEntity.ok(itemService.listarItensEmprestados());
     }
 

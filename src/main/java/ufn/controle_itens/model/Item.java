@@ -3,6 +3,8 @@ package ufn.controle_itens.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Data
 public class Item {
@@ -17,7 +19,8 @@ public class Item {
 
     private boolean disponivel = true;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private User usuarioAtual;
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Loan> loans;
 }
+
+

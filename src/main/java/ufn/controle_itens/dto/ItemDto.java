@@ -9,13 +9,12 @@ public class ItemDto {
     private String nome;
 
     private String codigo;
-    private String usuarioAtual;
-    private String codigoUsuario;
 
-    public ItemDto(String nome, String codigo, String usuarioAtual, String codigoUsuario) {
+    private boolean disponivel;
+
+    public ItemDto(String nome, String codigo, boolean disponivel) {
         this.nome = nome;
         this.codigo = codigo;
-        this.usuarioAtual = usuarioAtual;
-        this.codigoUsuario = codigoUsuario;
+        this.disponivel = disponivel;
     }
 }
