@@ -1,14 +1,13 @@
 
 <h1 align="left">
   <img src="https://github.com/user-attachments/assets/7342c5d7-e007-4320-a9c2-5bf39eb1275d" alt="Logo" width="40"/>
-  Sistema de Empréstimo - UFN
-</h1>
+# ![image](https://github.com/user-attachments/assets/7342c5d7-e007-4320-a9c2-5bf39eb1275d) Sistema de Empréstimo - UFN  
 > Sistema para controle de **itens emprestados** e **devolução** na **Universidade Franciscana (UFN)**.
+</h1>
 
 ---
 
 ## 🔗 Base URL da API
-```
 http://localhost:8080
 ```
 
