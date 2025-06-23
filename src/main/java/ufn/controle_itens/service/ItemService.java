@@ -1,6 +1,8 @@
 package ufn.controle_itens.service;
 
 import org.springframework.stereotype.Service;
+import ufn.controle_itens.dto.DevolverRequestDto;
+import ufn.controle_itens.dto.EmprestimoRequestDto;
 import ufn.controle_itens.dto.ItemDto;
 import ufn.controle_itens.dto.LoanLogDto;
 import ufn.controle_itens.model.Item;
@@ -48,58 +50,66 @@ public class ItemService {
         return item;
     }
 
-    public void registarMovimentacoes(String codigoItem, String codigoUsuario) {
-        Item item = itemRepository.findByCodigo(codigoItem)
+    public void emprestar(EmprestimoRequestDto dto) {
+        System.out.println("Código recebido: " + dto.getItemCodigo());
+        Item item = itemRepository.findByCodigo(dto.getItemCodigo())
                 .orElseThrow(() -> new RuntimeException("Item não encontrado"));
 
-        User usuario = userRepository.findByCodigo(codigoUsuario)
+        User usuario = userRepository.findByCodigo(dto.getUsuarioCodigo())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         //Empresta o item para o usuário
-        if (item.isDisponivel()) {
-            item.setDisponivel(false);
-            item.setUsuarioAtual(usuario);
-
-            LoanLog loanLog = new LoanLog();
-            loanLog.setItem(item);
-            loanLog.setUsuario(usuario);
-            loanLog.setTipo("EMPRESTIMO");
-            loanLog.setDataEmprestimo(LocalDateTime.now());
-
-            loanLogRepository.save(loanLog);
-
-            System.out.println("Item emprestado: " + item.getNome() + " para usuário: " + usuario.getNome());
-        } else {
-            //Devolve o item
-            item.setDisponivel(true);
-            item.setUsuarioAtual(null);
-
-            LoanLog loanLog = new LoanLog();
-            loanLog.setItem(item);
-            loanLog.setUsuario(usuario);
-            loanLog.setTipo("DEVOLUÇAO");
-            loanLog.setDataEmprestimo(LocalDateTime.now());
-
-            loanLogRepository.save(loanLog);
-
-            System.out.println("Item devolvido: " + item.getNome());
+        if (!item.isDisponivel()) {
+            throw new RuntimeException("Item já está emprestado");
         }
+        item.setDisponivel(false);
+        item.setUsuarioAtual(usuario);
+
+        LoanLog loanLog = new LoanLog();
+        loanLog.setItem(item);
+        loanLog.setUsuario(usuario);
+        loanLog.setTipo("EMPRESTIMO");
+        loanLog.setDataEmprestimo(LocalDateTime.now());
+
+        loanLogRepository.save(loanLog);
+
+        System.out.println("Item emprestado: " + item.getNome() + " para usuário: " + usuario.getNome());
 
         itemRepository.save(item);
     }
 
+    public void devolver(DevolverRequestDto dto) {
+        Item item = itemRepository.findByCodigo(dto.getItemCodigo())
+                .orElseThrow(() -> new RuntimeException("Item não encontrado"));
+
+        if (item.isDisponivel()) {
+            throw new RuntimeException("Item já está disponível");
+        }
+
+        //Devolve o item
+        item.setDisponivel(true);
+        item.setUsuarioAtual(null);
+
+        LoanLog loanLog = new LoanLog();
+        loanLog.setItem(item);
+        // Busca usuário 'Desconhecido' pelo código
+        User usuario = userRepository.findByCodigo("Desconhecido").orElseGet(() -> {
+            User novoUsuario = new User();
+            novoUsuario.setNome("Desconhecido");
+            novoUsuario.setCodigo("Desconhecido");
+            return userRepository.save(novoUsuario);
+        });
+        loanLog.setUsuario(usuario);
+        loanLog.setTipo("DEVOLUÇAO");
+        loanLog.setDataEmprestimo(LocalDateTime.now());
+
+        System.out.println("Item devolvido: " + item.getNome());
+
+        loanLogRepository.save(loanLog);
+        itemRepository.save(item);
+    }
+
     public List<ItemDto> listarItensEmprestados() {
-
-//        List<Item> itens = itemRepository.findAll();
-//        List<ItemDto> dtos = new ArrayList<>();
-//
-//        for (Item item : itens) {
-//            dtos.add(new ItemDto(item.getNome(), item.getCodigo()));
-//        }
-//
-//        Collections.reverse(dtos); // Inverter a lista
-//        return dtos;
-
         List<Item> itens = itemRepository.findAll();
 
         // Filtra os itens que estão emprestados (não disponíveis)

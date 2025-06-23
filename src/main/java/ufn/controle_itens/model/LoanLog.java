@@ -17,6 +17,7 @@ public class LoanLog {
     private Item item;
 
     @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = true)
     private User usuario;
 
     private LocalDateTime dataEmprestimo;

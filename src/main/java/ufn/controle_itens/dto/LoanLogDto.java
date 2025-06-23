@@ -18,8 +18,8 @@ public class LoanLogDto {
         this.tipo = tipo;
         this.itemNome = nome;
         this.itemCodigo = codigo;
-        this.usuarioNome = nome1;
-        this.usuarioCodigo = codigo1;
+        this.usuarioNome = nome1 != null ? nome1 : "Desconhecido";
+        this.usuarioCodigo = codigo1 != null ? codigo1 : "Desconhecido";
         this.dataEmprestimo = dataEmprestimo;
     }
 }

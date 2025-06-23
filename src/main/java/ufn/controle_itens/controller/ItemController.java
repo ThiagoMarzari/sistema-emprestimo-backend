@@ -3,11 +3,11 @@ package ufn.controle_itens.controller;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ufn.controle_itens.dto.DevolverRequestDto;
 import ufn.controle_itens.dto.EmprestimoRequestDto;
 import ufn.controle_itens.dto.ItemDto;
 import ufn.controle_itens.dto.LoanLogDto;
 import ufn.controle_itens.model.Item;
-import ufn.controle_itens.model.LoanLog;
 import ufn.controle_itens.service.ItemService;
 
 import java.util.List;
@@ -61,16 +61,16 @@ public class ItemController {
         }
     }
 
-    @PostMapping("/movimentacao")
-    public ResponseEntity<?> registarMovimentacao(@RequestBody EmprestimoRequestDto dto) {
-        try {
-            itemService.registarMovimentacoes(dto.getItemCodigo(), dto.getUsuarioCodigo());
-            return ResponseEntity.ok("Movimentação registrada com sucesso.");
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(404).body("Erro: " + ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.status(500).body("Erro ao registrar movimentação: " + ex.getMessage());
-        }
+    @PostMapping("/emprestar")
+    public ResponseEntity<?> emprestarItem(@RequestBody EmprestimoRequestDto dto) {
+        itemService.emprestar(dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/devolver")
+    public ResponseEntity<?> devolverItem(@RequestBody DevolverRequestDto dto) {
+        itemService.devolver(dto);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/logs")
