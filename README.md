@@ -1,25 +1,37 @@
-# Sistema de Empréstimo - UFN [Controle de Itens]
 
-Sistema para gerenciamento de **emprestimos** e **devolução** na Universidade Franciscana.
+# 🎓 Sistema de Empréstimo - UFN  
+> Sistema para controle de **itens emprestados** e **devolução** na **Universidade Franciscana (UFN)**.
 
 ---
 
-Rotas do backend e sua funcionalidade: 
-
-## 🌐 Base URL
+## 🔗 Base URL da API
 ```
 http://localhost:8080
 ```
 
 ---
 
-## 📋 Endpoints
+## 📌 Funcionalidades Principais
+
+### 📦 Portaria UFN
+- Cadastro e gerenciamento de **itens** (ex: chaves, controles de ar).
+- Cadastro e gerenciamento de **usuários** (professores e colaboradores da UFN).
+- **Leitura de código de barras** para:
+  - Identificação de itens no empréstimo/devolução.
+  - Identificação de usuários.
+- **Registro de movimentações** com:
+  - Data, hora, item e usuário.
+- **Painel de acompanhamento**:
+  - Situação atual de todos os itens (disponível ou emprestado).
+
+---
+
+## 📋 Endpoints da API
 
 ### 🧾 Itens
 
-#### 🔹 GET `/items`
-- **Descrição:** Retorna todos os itens cadastrados.
-- **Resposta esperada:**
+#### 🔹 `GET /items`  
+🔍 Lista todos os itens cadastrados.
 ```json
 [
   {
@@ -30,20 +42,18 @@ http://localhost:8080
 ]
 ```
 
-#### 🔹 POST `/items`
-- **Descrição:** Cria um novo item.
-- **Headers:**
-  ```
-  Content-Type: application/json
-  ```
-- **Body (JSON):**
+#### 🔹 `POST /items`  
+➕ Cadastra um novo item.  
+**Headers:**  
+`Content-Type: application/json`  
+**Body:**
 ```json
 {
   "nome": "Chave-203",
   "codigo": "CH-203"
 }
 ```
-- **Resposta esperada:**
+**Resposta:**
 ```json
 {
   "id": 2,
@@ -52,40 +62,37 @@ http://localhost:8080
 }
 ```
 
-#### 🔹 POST `/itens/emprestar`
-- **Descrição:** Registra o empréstimo de um item para um usuário.
-- **Body (JSON):**
+#### 🔹 `POST /itens/emprestar`  
+📤 Registra um empréstimo.
 ```json
 {
   "itemCodigo": "CH-201",
   "usuarioCodigo": "PRC-241zzz"
 }
 ```
-- **Resposta esperada:**
+**Resposta:**
 ```json
 {
   "mensagem": "Item emprestado com sucesso."
 }
 ```
 
-#### 🔹 POST `/itens/devolver`
-- **Descrição:** Registra a devolução de um item.
-- **Body (JSON):**
+#### 🔹 `POST /itens/devolver`  
+📥 Registra a devolução de um item.
 ```json
 {
   "itemCodigo": "CH-201"
 }
 ```
-- **Resposta esperada:**
+**Resposta:**
 ```json
 {
   "mensagem": "Item devolvido com sucesso."
 }
 ```
 
-#### 🔹 GET `/itens/emprestados`
-- **Descrição:** Lista os itens que estão emprestados.
-- **Resposta esperada:**
+#### 🔹 `GET /itens/emprestados`  
+📌 Lista itens atualmente emprestados.
 ```json
 [
   {
@@ -100,16 +107,15 @@ http://localhost:8080
 
 ### 👤 Usuários
 
-#### 🔹 POST `/usuarios`
-- **Descrição:** Cria um novo usuário.
-- **Body (JSON):**
+#### 🔹 `POST /usuarios`  
+➕ Cadastra um novo usuário.
 ```json
 {
   "nome": "Thiago",
   "codigo": "PRF-2312x"
 }
 ```
-- **Resposta esperada:**
+**Resposta:**
 ```json
 {
   "id": 1,
@@ -118,9 +124,8 @@ http://localhost:8080
 }
 ```
 
-#### 🔹 GET `/usuarios`
-- **Descrição:** Lista todos os usuários cadastrados.
-- **Resposta esperada:**
+#### 🔹 `GET /usuarios`  
+🔍 Lista todos os usuários cadastrados.
 ```json
 [
   {
@@ -135,38 +140,37 @@ http://localhost:8080
 
 ### 📜 Logs
 
-#### 🔹 GET `/logs`
-- **Descrição:** Retorna os logs do sistema (ex: histórico de empréstimos e devoluções).
+#### 🔹 `GET /logs`  
+🕓 Retorna o histórico de empréstimos e devoluções.
 
 ---
 
-## 📥 Importar no Postman
-
-Você pode importar a coleção de requisições no Postman usando o arquivo:
+## 🧪 Postman  
+Você pode importar todas as requisições usando o seguinte arquivo:
 
 ```
 UFN - Controle Itens.postman_collection.json
 ```
 
+---
 
-## Funcionalidades: 
+## 📊 Diagramas Utilizados
 
-## Portaria UFN
-- Cadastro e gerenciamento de itens (ex: chaves, controles de ar).
-- Cadastro e gerenciamento de usuários (professores e colaboradores da UFN).
-- Leitura de códigos de barras para:
-- Identificar os itens no momento do empréstimo e devolução.
-- Identificar o usuário responsável pelo item.
-- Registro das movimentações (empréstimo e devolução) com data, hora, item e usuário.
-- Painel de acompanhamento com a situação atual dos itens (disponível ou emprestado).
+### ✅ Diagrama de Casos de Uso
+*(Adicionar imagem ou link aqui)*
 
-## 🧠 Diagramas Utilizados:
+### ✅ Diagrama de Classes
+*(Adicionar imagem)*
 
-## Diagrama de Caso de Uso:
+---
 
-## Diagramas de Classe:
+## 📁 Estrutura de Pastas - Backend
 
-## 📁 Estrutura de Pastas -> backend
+> Visualização da organização interna do projeto:
+
+![Estrutura de Pastas](https://github.com/user-attachments/assets/26a1136a-01f8-4ca0-9016-b24dd10d7c1d)
+
+---
 
 ![WhatsApp Image 2025-06-23 at 13 09 34](https://github.com/user-attachments/assets/26a1136a-01f8-4ca0-9016-b24dd10d7c1d)
 
@@ -182,5 +186,6 @@ GitHub: [@Gabrielzinho1518](https://github.com/Gabrielzinho1518)
 GitHub: [@gabriel99557](https://github.com/gabriel99557) 
 
 **Gabriel Machado** 
-
 Github: [@Gorling](https://github.com/Gorling)
+
+
