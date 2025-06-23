@@ -44,6 +44,11 @@ public class ItemController {
         }
     }
 
+    @GetMapping("/emprestados")
+    public ResponseEntity<List<ItemDto>> listarItensEmprestados() {
+        return ResponseEntity.ok(itemService.listarItensEmprestados());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarItem(@PathVariable Long id) {
         try {
@@ -72,5 +77,6 @@ public class ItemController {
     public ResponseEntity<List<LoanLogDto>> listarLogs() {
         return ResponseEntity.ok(itemService.listarLogs());
     }
+
 
 }

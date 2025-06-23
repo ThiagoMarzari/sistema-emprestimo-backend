@@ -88,6 +88,31 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+    public List<ItemDto> listarItensEmprestados() {
+
+//        List<Item> itens = itemRepository.findAll();
+//        List<ItemDto> dtos = new ArrayList<>();
+//
+//        for (Item item : itens) {
+//            dtos.add(new ItemDto(item.getNome(), item.getCodigo()));
+//        }
+//
+//        Collections.reverse(dtos); // Inverter a lista
+//        return dtos;
+
+        List<Item> itens = itemRepository.findAll();
+
+        // Filtra os itens que estão emprestados (não disponíveis)
+        itens = itens.stream().filter(item -> !item.isDisponivel()).toList();
+
+        return itens.stream().map(item -> new ItemDto(
+                item.getNome(),
+                item.getCodigo(),
+                item.getUsuarioAtual().getNome(),
+                item.getUsuarioAtual().getCodigo()
+        )).toList().reversed();
+    }
+
     public List<LoanLogDto> listarLogs() {
         List<LoanLog> logs = loanLogRepository.findAll(); // ou filtrado por data etc.
 
