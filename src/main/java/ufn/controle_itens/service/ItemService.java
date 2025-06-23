@@ -9,6 +9,7 @@ import ufn.controle_itens.repository.ItemRepository;
 import ufn.controle_itens.repository.LoanRepository;
 import ufn.controle_itens.repository.UserRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -126,12 +127,14 @@ public class ItemService {
                 .map(item -> {
                     String usuarioNome = "Desconhecido";
                     String usuarioCodigo = "N/A";
+                    LocalDateTime dataEmprestimo = LocalDateTime.now();
 
                     if (item.getLoans() != null && !item.getLoans().isEmpty()) {
                         Loan ultimoLoan = item.getLoans().get(item.getLoans().size() - 1);
                         if (ultimoLoan.getUsuario() != null) {
                             usuarioNome = ultimoLoan.getUsuario().getNome();
                             usuarioCodigo = ultimoLoan.getUsuario().getCodigo();
+                            dataEmprestimo =  ultimoLoan.getDataHora();
                         }
                     }
 
@@ -139,7 +142,8 @@ public class ItemService {
                             item.getNome(),
                             item.getCodigo(),
                             usuarioNome,
-                            usuarioCodigo
+                            usuarioCodigo,
+                            dataEmprestimo
                     );
                 })
                 .toList()
