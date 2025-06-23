@@ -3,9 +3,6 @@
 > Sistema para controle de **itens emprestados** e **devolução** na **Universidade Franciscana (UFN)**.
 
 ---
-```
-
----
 
 ## 📌 Funcionalidades Principais
 
