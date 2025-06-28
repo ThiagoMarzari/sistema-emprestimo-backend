@@ -70,6 +70,8 @@ public class ItemController {
         return ResponseEntity.ok().build();
     }
 
+    //teste
+
     @PutMapping("/mudarStatus/{cod}")
     public ResponseEntity<?> statusItem(@PathVariable String cod) {
         itemService.updateItem(cod);
