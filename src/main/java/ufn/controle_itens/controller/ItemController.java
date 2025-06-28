@@ -70,10 +70,14 @@ public class ItemController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/mudarStatus/{cod}")
+    public ResponseEntity<?> statusItem(@PathVariable String cod) {
+        itemService.updateItem(cod);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/logs")
     public ResponseEntity<List<LoanLogDto>> listarLogs() {
         return ResponseEntity.ok(itemService.listarLogs());
     }
-
-
 }

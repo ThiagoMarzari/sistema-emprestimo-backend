@@ -12,6 +12,8 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private boolean habilitado = true;
+
     private String nome;
 
     @Column(unique = true)

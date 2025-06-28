@@ -38,7 +38,7 @@ public class ItemService {
     }
 
     public List<ItemDto> listar() {
-        List<Item> itens = itemRepository.findAll();
+        List<Item> itens = itemRepository.buscaItensHabilitados();
 
         List<ItemDto> itemDtos = itens.stream()
                 .map(item -> {
@@ -94,6 +94,17 @@ public class ItemService {
         itemRepository.save(item);
 
         System.out.println("Item emprestado: " + item.getNome() + " para usuário: " + usuario.getNome());
+    }
+
+    public Item updateItem(String cod){
+        Item item = itemRepository.findByCodigo(cod)
+                .orElseThrow(() -> new RuntimeException("Item não encontrado"));
+        if(item.isHabilitado()){
+            item.setHabilitado(false);
+        } else {
+            item.setHabilitado(true);
+        }
+        return itemRepository.save(item);
     }
 
     public void devolver(DevolverRequestDto dto) {
