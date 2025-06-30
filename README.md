@@ -158,7 +158,7 @@ UFN - Controle Itens.postman_collection.json
 
 ---
 ### Diagrama Loan 
-![DiagramaClasseLoan](https://github.com/user-attachments/assets/4c071fee-353c-4e57-80c7-183aed981449)
+![DiagramaClasseLoan](https://github.com/user-attachments/assets/34de19ac-8a36-4a88-8cca-d8387920b466)
 
 ### Diagrama User 
 ![DiagramaClasseUser](https://github.com/user-attachments/assets/b82b0a0f-943b-4e9b-b75b-4fc6a0fe5288)
