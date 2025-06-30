@@ -153,9 +153,15 @@ UFN - Controle Itens.postman_collection.json
 ![Diagrama de Caso de Uso](https://github.com/ThiagoMarzari/sistema-emprestimo-backend/blob/main/Diagrama%20de%20Caso%20de%20Uso.png)
 
 ### ✅ Diagrama de Classes
-*(Adicionar imagem)*
+### Diagrama Item
+![DiagramaClasseItem](https://github.com/user-attachments/assets/45021068-a388-4972-afa2-33c23e5d38f1)
 
 ---
+### Diagrama Loan 
+![DiagramaClasseLoan](https://github.com/user-attachments/assets/4c071fee-353c-4e57-80c7-183aed981449)
+
+### Diagrama User 
+![DiagramaClasseUser](https://github.com/user-attachments/assets/b82b0a0f-943b-4e9b-b75b-4fc6a0fe5288)
 
 ## 📁 Estrutura de Pastas - Backend
 
