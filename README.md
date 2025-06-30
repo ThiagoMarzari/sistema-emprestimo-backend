@@ -150,7 +150,7 @@ UFN - Controle Itens.postman_collection.json
 ## 📊 Diagramas Utilizados
 
 ### ✅ Diagrama de Casos de Uso
-*(Adicionar imagem ou link aqui)*
+![Diagrama de Caso de Uso](https://github.com/ThiagoMarzari/sistema-emprestimo-backend/blob/main/Diagrama%20de%20Caso%20de%20Uso.png)
 
 ### ✅ Diagrama de Classes
 *(Adicionar imagem)*
